@@ -1,18 +1,6 @@
 var ModuleTestTypedArray = (function(global) {
 
-var _isNodeOrNodeWebKit = !!global.global;
-var _runOnNodeWebKit =  _isNodeOrNodeWebKit &&  /native/.test(setTimeout);
-var _runOnNode       =  _isNodeOrNodeWebKit && !/native/.test(setTimeout);
-var _runOnWorker     = !_isNodeOrNodeWebKit && "WorkerLocation" in global;
-var _runOnBrowser    = !_isNodeOrNodeWebKit && "document" in global;
-
 global["BENCHMARK"] = false;
-
-if (console) {
-    if (!console.table) {
-        console.table = console.dir;
-    }
-}
 
 var test = new Test("TypedArray", {
         disable:    false, // disable all tests.
@@ -23,13 +11,25 @@ var test = new Test("TypedArray", {
         button:     true,  // show button.
         both:       true,  // test the primary and secondary modules.
         ignoreError:false, // ignore error.
+        callback:   function() {
+        },
+        errorback:  function(error) {
+        }
     }).add([
         testTypedArrayAndArrayBuffer,
     ]);
 
-if (_runOnWorker || _runOnBrowser) {
+if (IN_BROWSER || IN_NW) {
     test.add([
         testToArrayBufferXHRError,
+    ]);
+} else if (IN_WORKER) {
+    test.add([
+        // worker test
+    ]);
+} else if (IN_NODE) {
+    test.add([
+        // node.js and io.js test
     ]);
 }
 if (global["Blob"]) {
@@ -96,17 +96,17 @@ function testTypedArrayAndArrayBuffer(test, pass, miss) {
     // u8[n] に値を設定すると u32[n] の値も変化します
     u8.set([0, 1, 2, 3, 4, 5, 6, 7]);       // u8  = [00,01,02,03,04,05,06,07]
 
-    if ( Test.likeArray(u8, [0, 1, 2, 3, 4, 5, 6, 7]) ) {
-        console.log( Test.toHex(u8), Test.toHex(u32) );
+    if ( _likeArray(u8, [0, 1, 2, 3, 4, 5, 6, 7]) ) {
+        console.log( _toHex(u8), _toHex(u32) );
     } else {
-        console.log( Test.toHex(u8) );
+        console.log( _toHex(u8) );
         test.done(miss());
     }
-    if ( Test.likeArray(u32, TypedArray.BIG_ENDIAN ? [0x00010203, 0x04050607]
+    if ( _likeArray(u32, TypedArray.BIG_ENDIAN ? [0x00010203, 0x04050607]
                                                    : [0x03020100, 0x07060504]) ) {
-        console.log( Test.toHex(u8), Test.toHex(u32) );
+        console.log( _toHex(u8), _toHex(u32) );
     } else {
-        console.log( Test.toHex(u32) );
+        console.log( _toHex(u32) );
         test.done(miss());
     }
 
@@ -117,10 +117,10 @@ function testTypedArrayAndArrayBuffer(test, pass, miss) {
   //u8                                      // u8  = [00,01,02,03,04,05,06,07]
     cu8[0] = 0xFF;                          // cu8 = [FF,01,02,03,04,05,06,07]
 
-    if ( !Test.likeArray(u8, cu8) ) { // 違うはず
-        console.log( Test.toHex(u8), Test.toHex(cu8) );
+    if ( !_likeArray(u8, cu8) ) { // 違うはず
+        console.log( _toHex(u8), _toHex(cu8) );
     } else {
-        console.log( Test.toHex(u8), Test.toHex(cu8) );
+        console.log( _toHex(u8), _toHex(cu8) );
         test.done(miss());
     }
     cu8 = null;
@@ -146,7 +146,7 @@ function testTypedArrayAndArrayBuffer(test, pass, miss) {
     } else {
         test.done(miss());
     }
-    console.log( Test.toHex(u8), Test.toHex(u82) );
+    console.log( _toHex(u8), _toHex(u82) );
 
     // u82 の length は 4 しかないため、u82[5] = 0x00 は無効です。
     // また u82[5] に相当する u8[7] の値も変化せず 0x07 のままです
@@ -201,12 +201,12 @@ function testTypedArrayAndArrayBuffer(test, pass, miss) {
             u84[dest++] = u83[src++];
         }
 
-        if (Test.likeArray(u81, u83) &&
-            Test.likeArray(u82, u84)) {
+        if (_likeArray(u81, u83) &&
+            _likeArray(u82, u84)) {
             // OK
         } else {
-            console.log( Test.toHex(u81), Test.toHex(u83) );
-            console.log( Test.toHex(u82), Test.toHex(u84) );
+            console.log( _toHex(u81), _toHex(u83) );
+            console.log( _toHex(u82), _toHex(u84) );
             test.done(miss());
         }
     })();
@@ -214,7 +214,52 @@ function testTypedArrayAndArrayBuffer(test, pass, miss) {
     test.done(pass());
 }
 
-return test.run().clone();
+function _likeArray(a,             // @arg TypedArray|Array
+                    b,             // @arg TypedArray|Array
+                    fixedDigits) { // @arg Integer = 0 - floatingNumber.toFixed(fixedDigits)
+                                   // @ret Boolean
+    fixedDigits = fixedDigits || 0;
+    if (a.length !== b.length) {
+        return false;
+    }
+    for (var i = 0, iz = a.length; i < iz; ++i) {
+        if (fixedDigits) {
+            if ( a[i].toFixed(fixedDigits) !== b[i].toFixed(fixedDigits) ) {
+                return false;
+            }
+        } else {
+            if ( a[i] !== b[i] ) {
+                return false;
+            }
+        }
+    }
+    return true;
+}
 
-})((this || 0).self || global);
+function _toHex(a,             // @arg TypedArray|Array
+                fixedDigits) { // @arg Integer = 0 - floatingNumber.toFixed(fixedDigits)
+                               // @arg NumberStringArray - ["00", "01"]                  (Uint8Array)
+                               //                          ["0000", "0001", ...]         (Uint16Array)
+                               //                          ["00000000", "00000001", ...] (Uint32Array)
+                               //                          ["12.3", "0.1", ...]          (Float64Array)
+    var fix    = fixedDigits || 0;
+    var type   = Array.isArray(a) ? "Array" : Object.prototype.toString.call(a);
+    var result = [], i = 0, iz = a.length;
+    var bytes  = /8/.test(type) ? 2 : /32/.test(type) ? 8 : 4;
+
+    if (/float/.test(type)) {
+        for (; i < iz; ++i) {
+            result.push( (0x100000000 + a[i]).toString(16).slice(-bytes) );
+        }
+    } else {
+        for (; i < iz; ++i) {
+            result.push( fix ? a[i].toFixed(fix) : a[i] );
+        }
+    }
+    return result;
+}
+
+return test.run();
+
+})(GLOBAL);
 
