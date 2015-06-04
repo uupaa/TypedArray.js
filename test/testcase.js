@@ -54,7 +54,7 @@ function testToArrayBufferXHRError(test, pass, miss) {
         test.done(miss());
     };
 
-    TypedArray.toArrayBuffer(source, success, error);
+    WebModule.TypedArray.toArrayBuffer(source, success, error);
 }
 
 function testToArrayBufferFileReader(test, pass, miss) {
@@ -74,7 +74,7 @@ function testToArrayBufferFileReader(test, pass, miss) {
         test.done(miss());
     };
 
-    TypedArray.toArrayBuffer(source, success, error);
+    WebModule.TypedArray.toArrayBuffer(source, success, error);
 }
 
 function testTypedArrayAndArrayBuffer(test, pass, miss) {
@@ -102,8 +102,8 @@ function testTypedArrayAndArrayBuffer(test, pass, miss) {
         console.log( _toHex(u8) );
         test.done(miss());
     }
-    if ( _likeArray(u32, TypedArray.BIG_ENDIAN ? [0x00010203, 0x04050607]
-                                                   : [0x03020100, 0x07060504]) ) {
+    if ( _likeArray(u32, WebModule.TypedArray.BIG_ENDIAN ? [0x00010203, 0x04050607]
+                                                         : [0x03020100, 0x07060504]) ) {
         console.log( _toHex(u8), _toHex(u32) );
     } else {
         console.log( _toHex(u32) );
