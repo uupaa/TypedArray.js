@@ -10,8 +10,8 @@
 ## Browser and NW.js(node-webkit)
 
 ```js
-<script src="<your-install-dir>/lib/WebModule.js"></script>
-<script src="<your-install-dir>/lib/TypedArray.js"></script>
+<script src="<module-dir>/lib/WebModule.js"></script>
+<script src="<module-dir>/lib/TypedArray.js"></script>
 <script>
 
 console.log( WebModule.TypedArray.BIG_ENDIAN );                           // false (in Intel Mac)
@@ -55,19 +55,19 @@ ADRESS  0 1 2 3  4 5 6 7  8 9 A B  C D E F
 ```
 
 
-### WebWorkers
+## WebWorkers
 
 ```js
-importScripts("<your-install-dir>lib/WebModule.js");
-importScripts("<your-install-dir>lib/TypedArray.js");
+importScripts("<module-dir>lib/WebModule.js");
+importScripts("<module-dir>lib/TypedArray.js");
 
 ```
 
 ## Node.js
 
 ```js
-require("<your-install-dir>lib/WebModule.js");
-require("<your-install-dir>lib/TypedArray.js");
+require("<module-dir>lib/WebModule.js");
+require("<module-dir>lib/TypedArray.js");
 
 ```
 
