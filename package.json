@@ -1,6 +1,6 @@
 {
   "name": "uupaa.typedarray.js",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "TypedArray utility functions.",
   "url": "https://github.com/uupaa/TypedArray.js",
   "keywords": ["TypedArray", "uupaa", "WebModule"],
@@ -10,6 +10,7 @@
   },
   "scripts": {
     "sync": "node ../WebModule/run/sync.js; npm update; node ../WebModule/run/page.js",
+    "wiki": "node ../WebModule/run/wiki.js",
     "min": "node ../WebModule/run/minify.js --verbose --strict --keep --pretty",
     "build": "node ../WebModule/run/minify.js --verbose --strict --keep --release",
     "watch": "node ../WebModule/run/watch.js --verbose --run lint",
@@ -18,6 +19,7 @@
     "node": "NODE_ENV=production NODE_PATH=lib node --harmony test/node.js",
     "noded": "NODE_ENV=production NODE_PATH=lib node --debug-brk --harmony test/node.js",
     "browser": "open http://localhost:8000/TypedArray.js/test/index.html",
+    "add-src": "node ../WebModule/run/add-src.js",
     "sim": "node ../WebModule/run/sim.js http://localhost:8000/TypedArray.js/test/index.html",
     "simx": "node ../WebModule/run/sim.js stop",
     "lint": "eslint lib/*.js",
