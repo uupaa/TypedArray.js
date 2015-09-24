@@ -17,6 +17,7 @@ var test = new Test("TypedArray", {
         }
     }).add([
         testTypedArrayAndArrayBuffer,
+        testTypedArray_expand,
     ]);
 
 if (IN_BROWSER || IN_NW) {
@@ -39,6 +40,27 @@ if (global["Blob"]) {
 }
 
 // --- test cases ------------------------------------------
+function testTypedArray_expand(test, pass, miss) {
+    var a = new Uint8Array([1,2,3,4,5]);
+    var b = TypedArray.expand(a);
+
+    if (b[0] === 1 &&
+        b[1] === 2 &&
+        b[2] === 3 &&
+        b[3] === 4 &&
+        b[4] === 5 &&
+        b[5] === 0 &&
+        b[6] === 0 &&
+        b[7] === 0 &&
+        b[8] === 0 &&
+        b[9] === 0 &&
+        b.length === a.length * 2) {
+        test.done(pass());
+    } else {
+        test.done(miss());
+    }
+}
+
 function testToArrayBufferXHRError(test, pass, miss) {
     var source = "./404.png";
 
