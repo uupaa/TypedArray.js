@@ -4,8 +4,8 @@
 
 
 
-- TypedArray.js made of [WebModule](https://github.com/uupaa/WebModule).
-- [Spec](https://github.com/uupaa/TypedArray.js/wiki/TypedArray)
+- Please refer to [Spec](https://github.com/uupaa/TypedArray.js/wiki/) and [API Spec](https://github.com/uupaa/TypedArray.js/wiki/TypedArray) links.
+- The TypedArray.js is made of [WebModule](https://github.com/uupaa/WebModule).
 
 ## Browser and NW.js(node-webkit)
 
@@ -14,25 +14,25 @@
 <script src="<module-dir>/lib/TypedArray.js"></script>
 <script>
 
-console.log( WebModule.TypedArray.BIG_ENDIAN );                           // false (in Intel Mac)
-console.log( WebModule.TypedArray.hton16( new Uint8Array([1,2]) ) );      // [2, 1]
-console.log( WebModule.TypedArray.ntoh16( new Uint8Array([1,2]) ) );      // [2, 1]
-console.log( WebModule.TypedArray.hton16( WebModule.TypedArray.ntoh16( new Uint8Array([1,2]) ) ) ); // [1, 2]
-console.log( WebModule.TypedArray.toString( new Uint8Array([0x33, 0x34, 0x35, 0x36]) ) ); // "3456"
-console.log( WebModule.TypedArray.fromString("Hello") );                  // [72, 101, 108, 108, 111]
-console.log( WebModule.TypedArray.fromString("あいう") );                 // [66, 68, 70]
-console.log( WebModule.TypedArray.fromString("あいう", Uint16Array) );    // [12354, 12356, 12358]
+TypedArray.BIG_ENDIAN                           // -> false (ARM, Intel CPU)
+TypedArray.hton16( new Uint8Array([1,2]) )      // -> [2, 1]
+TypedArray.ntoh16( new Uint8Array([1,2]) )      // -> [2, 1]
+TypedArray.hton16( TypedArray.ntoh16( new Uint8Array([1,2]) ) ) // -> [1, 2]
+TypedArray.expand( new Uint32Array([1,2,3]) )   // -> Uint32Array([1,2,3,0,0,0])
 
-WebModule.TypedArray.toArrayBuffer("http://example.com/404.png", function(arrayBuffer) {
-    //
-});
+TypedArray.toString( new Uint8Array([0x33, 0x34, 0x35, 0x36]) ) // -> "3456"
+TypedArray.fromString("Hello")                  // -> [72, 101, 108, 108, 111]
+TypedArray.fromString("あいう")                 // -> [66, 68, 70]
+TypedArray.fromString("あいう", Uint16Array)    // -> [12354, 12356, 12358]
+
+TypedArray.toArrayBuffer("http://example.com/404.png", function(arrayBuffer) { ... });
 </script>
 ```
 
 `WebModule.TypedArray.hexDump( WebModule.TypedArray.fromString("あいうえお", Uint32Array) );`
 
 ```
-ADRESS  0 1 2 3  4 5 6 7  8 9 A B  C D E F
+ADRESS        0        1        2        3
 ------ -------- -------- -------- --------
 000000 00003042 00003044 00003046 00003048
 000004 0000304a
@@ -41,17 +41,17 @@ ADRESS  0 1 2 3  4 5 6 7  8 9 A B  C D E F
 `WebModule.TypedArray.hexDump( WebModule.TypedArray.fromString("あいうえお", Uint16Array) );`
 
 ```
-ADRESS  0 1 2 3  4 5 6 7  8 9 A B  C D E F
------- -------- -------- -------- --------
-000000 30423044 30463048 304a
+ADRESS    0    1    2    3    4    5    6    7
+------ ---- ---- ---- ---- ---- ---- ---- ----
+000000 3042 3044 3046 3048 304a
 ```
 
 `WebModule.TypedArray.hexDump( WebModule.TypedArray.fromString("あいうえお", Uint8Array));`
 
 ```
-ADRESS  0 1 2 3  4 5 6 7  8 9 A B  C D E F
------- -------- -------- -------- --------
-000000 42444648 4a
+ADRESS  0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F
+------ -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+000000 42 44 46 48 4a
 ```
 
 
@@ -61,7 +61,9 @@ ADRESS  0 1 2 3  4 5 6 7  8 9 A B  C D E F
 importScripts("<module-dir>lib/WebModule.js");
 importScripts("<module-dir>lib/TypedArray.js");
 
+...
 ```
+
 
 ## Node.js
 
@@ -69,5 +71,6 @@ importScripts("<module-dir>lib/TypedArray.js");
 require("<module-dir>lib/WebModule.js");
 require("<module-dir>lib/TypedArray.js");
 
+...
 ```
 
