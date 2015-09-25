@@ -41,24 +41,22 @@ if (global["Blob"]) {
 
 // --- test cases ------------------------------------------
 function testTypedArray_expand(test, pass, miss) {
-    var a = new Uint8Array([1,2,3,4,5]);
-    var b = TypedArray.expand(a);
+    var u8a = new Uint8Array([1,2,3]);
+    var u8b = TypedArray.expand(u8a);
+    var u16a = new Uint16Array([1,2,3]);
+    var u16b = TypedArray.expand(u16a);
 
-    if (b[0] === 1 &&
-        b[1] === 2 &&
-        b[2] === 3 &&
-        b[3] === 4 &&
-        b[4] === 5 &&
-        b[5] === 0 &&
-        b[6] === 0 &&
-        b[7] === 0 &&
-        b[8] === 0 &&
-        b[9] === 0 &&
-        b.length === a.length * 2) {
-        test.done(pass());
-    } else {
-        test.done(miss());
+    if (u8b[0] === 1 && u8b[1] === 2 && u8b[2] === 3 &&
+        u8b[3] === 0 && u8b[4] === 0 && u8b[5] === 0 &&
+        u8b.length === u8a.length * 2) {
+        if (u16b[0] === 1 && u16b[1] === 2 && u16b[2] === 3 &&
+            u16b[3] === 0 && u16b[4] === 0 && u16b[5] === 0 &&
+            u16b.length === u16a.length * 2) {
+            test.done(pass());
+            return;
+        }
     }
+    test.done(miss());
 }
 
 function testToArrayBufferXHRError(test, pass, miss) {
