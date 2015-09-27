@@ -235,16 +235,16 @@ function testTypedArray_hton(test, pass, miss) {
 
     TypedArray.BIG_ENDIAN = true;
     var result1 = {
-        1: TypedArray.hton16(a).join() === [1,2].join(),
-        2: TypedArray.hton32(a).join() === [1,2,3,4].join(),
-        3: TypedArray.hton64(a).join() === [1,2,3,4,5,6,7,8].join(),
+        1: TypedArray.hton2(a).join() === [1,2].join(),
+        2: TypedArray.hton4(a).join() === [1,2,3,4].join(),
+        3: TypedArray.hton8(a).join() === [1,2,3,4,5,6,7,8].join(),
     };
 
     TypedArray.BIG_ENDIAN = false;
     var result2 = {
-        1: TypedArray.hton16(a).join() === [2,1].join(),
-        2: TypedArray.hton32(a).join() === [4,3,2,1].join(),
-        3: TypedArray.hton64(a).join() === [8,7,6,5,4,3,2,1].join(),
+        1: TypedArray.hton2(a).join() === [2,1].join(),
+        2: TypedArray.hton4(a).join() === [4,3,2,1].join(),
+        3: TypedArray.hton8(a).join() === [8,7,6,5,4,3,2,1].join(),
     };
 
     TypedArray.BIG_ENDIAN = defaultEndian;
@@ -264,16 +264,16 @@ function testTypedArray_ntoh(test, pass, miss) {
 
     TypedArray.BIG_ENDIAN = true;
     var result1 = {
-        1: TypedArray.ntoh16(a).join() === [1,2].join(),
-        2: TypedArray.ntoh32(a).join() === [1,2,3,4].join(),
-        3: TypedArray.ntoh64(a).join() === [1,2,3,4,5,6,7,8].join(),
+        1: TypedArray.ntoh2(a).join() === [1,2].join(),
+        2: TypedArray.ntoh4(a).join() === [1,2,3,4].join(),
+        3: TypedArray.ntoh8(a).join() === [1,2,3,4,5,6,7,8].join(),
     };
 
     TypedArray.BIG_ENDIAN = false;
     var result2 = {
-        1: TypedArray.ntoh16(a).join() === [2,1].join(),
-        2: TypedArray.ntoh32(a).join() === [4,3,2,1].join(),
-        3: TypedArray.ntoh64(a).join() === [8,7,6,5,4,3,2,1].join(),
+        1: TypedArray.ntoh2(a).join() === [2,1].join(),
+        2: TypedArray.ntoh4(a).join() === [4,3,2,1].join(),
+        3: TypedArray.ntoh8(a).join() === [8,7,6,5,4,3,2,1].join(),
     };
 
     TypedArray.BIG_ENDIAN = defaultEndian;
@@ -292,15 +292,15 @@ function testTypedArray_read(test, pass, miss) {
     var view2 = { source: new Uint8Array(a), cursor: 0 };
 
     var result = {
-        1: TypedArray.read8(view1) === 1,
-        2: TypedArray.read16(view1) === (2 << 8) + 3,
-        3: TypedArray.read24(view1) === (4 << 16) + (5 << 8) + 6,
-        4: TypedArray.read32(view1) === (7 << 24) + (8 << 16) + (9 << 8) + 10,
+        1: TypedArray.read1(view1) === 1,
+        2: TypedArray.read2(view1) === (2 << 8) + 3,
+        3: TypedArray.read3(view1) === (4 << 16) + (5 << 8) + 6,
+        4: TypedArray.read4(view1) === (7 << 24) + (8 << 16) + (9 << 8) + 10,
 
-        5: TypedArray.read8(view2) === 1,
-        6: TypedArray.read16LE(view2) === (3 << 8) + 2,
-        7: TypedArray.read24LE(view2) === (6 << 16) + (5 << 8) + 4,
-        8: TypedArray.read32LE(view2) === (10 << 24) + (9 << 16) + (8 << 8) + 7,
+        5: TypedArray.read1(view2) === 1,
+        6: TypedArray.read2LE(view2) === (3 << 8) + 2,
+        7: TypedArray.read3LE(view2) === (6 << 16) + (5 << 8) + 4,
+        8: TypedArray.read4LE(view2) === (10 << 24) + (9 << 16) + (8 << 8) + 7,
     };
 
     if ( /false/.test(JSON.stringify(result)) ) {
