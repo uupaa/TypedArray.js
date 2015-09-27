@@ -17,7 +17,7 @@ onmessage = function(event) {
     // publish to global
     WebModule.publish = true;
 
-    
+    importScripts("../node_modules/uupaa.random.js/lib/Random.js");
     importScripts("wmtools.js");
     importScripts("../lib/TypedArray.js");
     importScripts("../release/TypedArray.w.min.js");

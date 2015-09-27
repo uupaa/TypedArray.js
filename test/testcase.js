@@ -16,13 +16,19 @@ var test = new Test("TypedArray", {
         errorback:  function(error) {
         }
     }).add([
-        testTypedArrayAndArrayBuffer,
+        testTypedArray_basic,
+        testTypedArray_hton,
+        testTypedArray_ntoh,
         testTypedArray_expand,
+        testTypedArray_read,
+        testTypedArray_toString,
+        testTypedArray_fromString,
+        testTypedArray_dump,
     ]);
 
 if (IN_BROWSER || IN_NW) {
     test.add([
-        testToArrayBufferXHRError,
+        testTypedArray_toArrayBuffer_xhr404,
     ]);
 } else if (IN_WORKER) {
     test.add([
@@ -35,69 +41,12 @@ if (IN_BROWSER || IN_NW) {
 }
 if (global["Blob"]) {
     test.add([
-        testToArrayBufferFileReader,
+        testTypedArray_toArrayBuffer_blob,
     ]);
 }
 
 // --- test cases ------------------------------------------
-function testTypedArray_expand(test, pass, miss) {
-    var u8a = new Uint8Array([1,2,3]);
-    var u8b = TypedArray.expand(u8a);
-    var u16a = new Uint16Array([1,2,3]);
-    var u16b = TypedArray.expand(u16a);
-
-    if (u8b[0] === 1 && u8b[1] === 2 && u8b[2] === 3 &&
-        u8b[3] === 0 && u8b[4] === 0 && u8b[5] === 0 &&
-        u8b.length === u8a.length * 2) {
-        if (u16b[0] === 1 && u16b[1] === 2 && u16b[2] === 3 &&
-            u16b[3] === 0 && u16b[4] === 0 && u16b[5] === 0 &&
-            u16b.length === u16a.length * 2) {
-            test.done(pass());
-            return;
-        }
-    }
-    test.done(miss());
-}
-
-function testToArrayBufferXHRError(test, pass, miss) {
-    var source = "./404.png";
-
-    var success = function(result, source) {
-        test.done(miss());
-    };
-
-    var error = function(error, source) {
-        if (error instanceof Error) {
-            test.done(pass());
-            return;
-        }
-        test.done(miss());
-    };
-
-    WebModule.TypedArray.toArrayBuffer(source, success, error);
-}
-
-function testToArrayBufferFileReader(test, pass, miss) {
-    var source = new Blob(["hello"], { type: "text/plain" });
-
-    var success = function(result, source) {
-        if (result && result.byteLength === 5) {
-            var text = String.fromCharCode.apply(null, new Uint8Array(result));
-            if (text === "hello") {
-                test.done(pass());
-                return;
-            }
-        }
-        test.done(miss());
-    };
-    var error = function(error, source) {
-        test.done(miss());
-    };
-
-    WebModule.TypedArray.toArrayBuffer(source, success, error);
-}
-
-function testTypedArrayAndArrayBuffer(test, pass, miss) {
+function testTypedArray_basic(test, pass, miss) {
     //
     // 1. ArrayBuffer.slice() は新たにメモリを確保し、配列の一部をコピーする
     //
@@ -277,6 +226,195 @@ function _toHex(a,             // @arg TypedArray|Array
         }
     }
     return result;
+}
+
+function testTypedArray_hton(test, pass, miss) {
+    var defaultEndian = TypedArray.BIG_ENDIAN;
+
+    var a = new Uint8Array([1,2,3,4,5,6,7,8]);
+
+    TypedArray.BIG_ENDIAN = true;
+    var result1 = {
+        1: TypedArray.hton16(a).join() === [1,2].join(),
+        2: TypedArray.hton32(a).join() === [1,2,3,4].join(),
+        3: TypedArray.hton64(a).join() === [1,2,3,4,5,6,7,8].join(),
+    };
+
+    TypedArray.BIG_ENDIAN = false;
+    var result2 = {
+        1: TypedArray.hton16(a).join() === [2,1].join(),
+        2: TypedArray.hton32(a).join() === [4,3,2,1].join(),
+        3: TypedArray.hton64(a).join() === [8,7,6,5,4,3,2,1].join(),
+    };
+
+    TypedArray.BIG_ENDIAN = defaultEndian;
+
+    if ( /false/.test(JSON.stringify(result1)) ||
+         /false/.test(JSON.stringify(result2)) ) {
+        test.done(miss());
+    } else {
+        test.done(pass());
+    }
+}
+
+function testTypedArray_ntoh(test, pass, miss) {
+    var defaultEndian = TypedArray.BIG_ENDIAN;
+
+    var a = new Uint8Array([1,2,3,4,5,6,7,8]);
+
+    TypedArray.BIG_ENDIAN = true;
+    var result1 = {
+        1: TypedArray.ntoh16(a).join() === [1,2].join(),
+        2: TypedArray.ntoh32(a).join() === [1,2,3,4].join(),
+        3: TypedArray.ntoh64(a).join() === [1,2,3,4,5,6,7,8].join(),
+    };
+
+    TypedArray.BIG_ENDIAN = false;
+    var result2 = {
+        1: TypedArray.ntoh16(a).join() === [2,1].join(),
+        2: TypedArray.ntoh32(a).join() === [4,3,2,1].join(),
+        3: TypedArray.ntoh64(a).join() === [8,7,6,5,4,3,2,1].join(),
+    };
+
+    TypedArray.BIG_ENDIAN = defaultEndian;
+
+    if ( /false/.test(JSON.stringify(result1)) ||
+         /false/.test(JSON.stringify(result2)) ) {
+        test.done(miss());
+    } else {
+        test.done(pass());
+    }
+}
+
+function testTypedArray_read(test, pass, miss) {
+    var a = [1,2,3,4,5,6,7,8,9,10];
+    var view1 = { source: new Uint8Array(a), cursor: 0 };
+    var view2 = { source: new Uint8Array(a), cursor: 0 };
+
+    var result = {
+        1: TypedArray.read8(view1) === 1,
+        2: TypedArray.read16(view1) === (2 << 8) + 3,
+        3: TypedArray.read24(view1) === (4 << 16) + (5 << 8) + 6,
+        4: TypedArray.read32(view1) === (7 << 24) + (8 << 16) + (9 << 8) + 10,
+
+        5: TypedArray.read8(view2) === 1,
+        6: TypedArray.read16LE(view2) === (3 << 8) + 2,
+        7: TypedArray.read24LE(view2) === (6 << 16) + (5 << 8) + 4,
+        8: TypedArray.read32LE(view2) === (10 << 24) + (9 << 16) + (8 << 8) + 7,
+    };
+
+    if ( /false/.test(JSON.stringify(result)) ) {
+        test.done(miss());
+    } else {
+        test.done(pass());
+    }
+}
+
+function testTypedArray_expand(test, pass, miss) {
+    var u8a = new Uint8Array([1,2,3]);
+    var u8b = TypedArray.expand(u8a);
+    var u16a = new Uint16Array([1,2,3]);
+    var u16b = TypedArray.expand(u16a);
+
+    if (u8b[0] === 1 && u8b[1] === 2 && u8b[2] === 3 &&
+        u8b[3] === 0 && u8b[4] === 0 && u8b[5] === 0 &&
+        u8b.length === u8a.length * 2) {
+        if (u16b[0] === 1 && u16b[1] === 2 && u16b[2] === 3 &&
+            u16b[3] === 0 && u16b[4] === 0 && u16b[5] === 0 &&
+            u16b.length === u16a.length * 2) {
+            test.done(pass());
+            return;
+        }
+    }
+    test.done(miss());
+}
+
+function testTypedArray_toString(test, pass, miss) {
+    var a = new Uint8Array(32000);
+    var b = TypedArray.toString(a);
+
+    if (a.length === b.length) {
+        test.done(pass());
+    } else {
+        test.done(miss());
+    }
+}
+
+function testTypedArray_fromString(test, pass, miss) {
+    var a = TypedArray.fromString("hello", Uint16Array);
+    var b = TypedArray.toString(a);
+
+    if (b === "hello") {
+        test.done(pass());
+    } else {
+        test.done(miss());
+    }
+}
+
+function testTypedArray_toArrayBuffer_xhr404(test, pass, miss) {
+    var source = "./404.png";
+
+    var success = function(result, source) {
+        test.done(miss());
+    };
+
+    var error = function(error, source) {
+        if (error instanceof Error) {
+            test.done(pass());
+            return;
+        }
+        test.done(miss());
+    };
+
+    TypedArray.toArrayBuffer(source, success, error);
+}
+
+function testTypedArray_toArrayBuffer_blob(test, pass, miss) {
+    var source = new Blob(["hello"], { type: "text/plain" });
+
+    var success = function(result, source) {
+        if (result && result.byteLength === 5) {
+            var text = String.fromCharCode.apply(null, new Uint8Array(result));
+            if (text === "hello") {
+                test.done(pass());
+                return;
+            }
+        }
+        test.done(miss());
+    };
+    var error = function(error, source) {
+        test.done(miss());
+    };
+
+    WebModule.TypedArray.toArrayBuffer(source, success, error);
+}
+
+function _makeRndomValue(length) {
+    var result = [];
+    var random = new Random();
+    for (var i = 0, iz = length; i < iz; ++i) {
+        result.push( random.next() );
+    }
+    return result;
+}
+
+function testTypedArray_dump(test, pass, miss) {
+    var src8  = _makeRndomValue(60).map(function(v) { return v & 0xff });
+    var src16 = _makeRndomValue(60).map(function(v) { return v & 0xffff });
+    var src32 = _makeRndomValue(60).map(function(v) { return v & 0xffffffff });
+    var markup = { 3: "blue", 234: "red", 18858: "green", 0x00b0: "green" };
+
+    TypedArray.dump(new Uint8Array(src8),    0, 0, 16, markup);
+    TypedArray.dump(new Uint16Array(src16),  0, 0, 16, markup);
+    TypedArray.dump(new Uint32Array(src32),  0, 0, 16, markup);
+    TypedArray.dump(new Uint8Array(src8),    0, 0, 10, markup);
+    TypedArray.dump(new Uint16Array(src16),  0, 0, 10, markup);
+    TypedArray.dump(new Uint32Array(src32),  0, 0, 10, markup);
+    TypedArray.dump(new Uint8Array(src8),    0, 0,  2, markup);
+    TypedArray.dump(new Uint16Array(src16),  0, 0,  2, markup);
+    TypedArray.dump(new Uint32Array(src32),  0, 0,  2, markup);
+
+    test.done(pass());
 }
 
 return test.run();

@@ -1,6 +1,6 @@
 {
   "name": "uupaa.typedarray.js",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "TypedArray utility functions.",
   "url": "https://github.com/uupaa/TypedArray.js",
   "keywords": ["TypedArray", "uupaa", "WebModule"],
@@ -50,7 +50,9 @@
     }
   },
   "dependencies": {},
-  "devDependencies": {},
+  "devDependencies": {
+    "uupaa.random.js": ""
+  },
   "lib": "./lib/",
   "main": "./index.js",
   "author": "uupaa",
