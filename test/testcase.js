@@ -24,6 +24,7 @@ var test = new Test("TypedArray", {
         testTypedArray_toString,
         testTypedArray_fromString,
         testTypedArray_dump,
+        testTypedArray_dumpMarkup,
     ]);
 
 if (IN_BROWSER || IN_NW) {
@@ -402,17 +403,46 @@ function testTypedArray_dump(test, pass, miss) {
     var src8  = _makeRndomValue(60).map(function(v) { return v & 0xff });
     var src16 = _makeRndomValue(60).map(function(v) { return v & 0xffff });
     var src32 = _makeRndomValue(60).map(function(v) { return v & 0xffffffff });
-    var markup = { 3: "blue", 234: "red", 18858: "green", 0x00b0: "green" };
 
-    TypedArray.dump(new Uint8Array(src8),    0, 0, 16, markup);
-    TypedArray.dump(new Uint16Array(src16),  0, 0, 16, markup);
-    TypedArray.dump(new Uint32Array(src32),  0, 0, 16, markup);
-    TypedArray.dump(new Uint8Array(src8),    0, 0, 10, markup);
-    TypedArray.dump(new Uint16Array(src16),  0, 0, 10, markup);
-    TypedArray.dump(new Uint32Array(src32),  0, 0, 10, markup);
-    TypedArray.dump(new Uint8Array(src8),    0, 0,  2, markup);
-    TypedArray.dump(new Uint16Array(src16),  0, 0,  2, markup);
-    TypedArray.dump(new Uint32Array(src32),  0, 0,  2, markup);
+    TypedArray.dump(new Uint8Array(src8),    0, 0, 16);
+    TypedArray.dump(new Uint16Array(src16),  0, 0, 16);
+    TypedArray.dump(new Uint32Array(src32),  0, 0, 16);
+    TypedArray.dump(new Uint8Array(src8),    0, 0, 10);
+    TypedArray.dump(new Uint16Array(src16),  0, 0, 10);
+    TypedArray.dump(new Uint32Array(src32),  0, 0, 10);
+    TypedArray.dump(new Uint8Array(src8),    0, 0,  2);
+    TypedArray.dump(new Uint16Array(src16),  0, 0,  2);
+    TypedArray.dump(new Uint32Array(src32),  0, 0,  2);
+
+    test.done(pass());
+}
+
+function testTypedArray_dumpMarkup(test, pass, miss) {
+    var src8  = _makeRndomValue(60).map(function(v) { return v & 0xff });
+    var src16 = _makeRndomValue(60).map(function(v) { return v & 0xffff });
+    var src32 = _makeRndomValue(60).map(function(v) { return v & 0xffffffff });
+    var markupObject = { min: 0x00, max: 0x80, 0xea: "blue", 0xe6: "green" };
+    var markupArray = [0x45ea, 0x16e6];
+    var markupFunction = function(num, markup) {
+        var rand = (Math.random() * 10) | 0;
+        switch (rand) {
+        case 0: return "black";
+        case 1: return "red";
+        case 2: return "blue";
+        case 3: return "green";
+        case 4: return "navy";
+        case 5: return "lime";
+        case 6: return "pink";
+        case 7: return "tomato";
+        case 8: return "skyblue";
+        case 9: return "gold";
+        }
+        return "white";
+    };
+
+    TypedArray.dump(new Uint8Array(src8),    0, 0, 16, markupObject);
+    TypedArray.dump(new Uint16Array(src16),  0, 0, 16, markupArray);
+    TypedArray.dump(new Uint32Array(src32),  0, 0, 16, markupFunction);
 
     test.done(pass());
 }
