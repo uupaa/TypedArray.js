@@ -32,7 +32,7 @@ TypedArray.toArrayBuffer("http://example.com/404.png", function(arrayBuffer) { .
 `WebModule.TypedArray.hexDump( WebModule.TypedArray.fromString("あいうえお", Uint32Array) );`
 
 ```
-ADRESS        0        1        2        3
+ADDR          0        1        2        3
 ------ -------- -------- -------- --------
 000000 00003042 00003044 00003046 00003048
 000004 0000304a
@@ -41,7 +41,7 @@ ADRESS        0        1        2        3
 `WebModule.TypedArray.hexDump( WebModule.TypedArray.fromString("あいうえお", Uint16Array) );`
 
 ```
-ADRESS    0    1    2    3    4    5    6    7
+ADDR      0    1    2    3    4    5    6    7
 ------ ---- ---- ---- ---- ---- ---- ---- ----
 000000 3042 3044 3046 3048 304a
 ```
@@ -49,7 +49,7 @@ ADRESS    0    1    2    3    4    5    6    7
 `WebModule.TypedArray.hexDump( WebModule.TypedArray.fromString("あいうえお", Uint8Array));`
 
 ```
-ADRESS  0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F
+ADDR    0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F
 ------ -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 000000 42 44 46 48 4a
 ```
