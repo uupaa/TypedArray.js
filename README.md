@@ -2,12 +2,15 @@
 
 [![npm](https://nodei.co/npm/uupaa.typedarray.js.svg?downloads=true&stars=true)](https://nodei.co/npm/uupaa.typedarray.js/)
 
+TypedArray utility functions.
 
+Thiry utility functions. module made of [WebModule](https://github.com/uupaa/WebModule).
 
-- Please refer to [Spec](https://github.com/uupaa/TypedArray.js/wiki/) and [API Spec](https://github.com/uupaa/TypedArray.js/wiki/TypedArray) links.
-- The TypedArray.js is made of [WebModule](https://github.com/uupaa/WebModule).
+## Documentation
+- [Spec](https://github.com/uupaa/TypedArray.js/wiki/)
+- [API Spec](https://github.com/uupaa/TypedArray.js/wiki/TypedArray)
 
-## Browser and NW.js(node-webkit)
+## Browser, NW.js and Electron
 
 ```js
 <script src="<module-dir>/lib/WebModule.js"></script>
@@ -29,7 +32,7 @@ TypedArray.toArrayBuffer("http://example.com/404.png", function(arrayBuffer) { .
 </script>
 ```
 
-`WebModule.TypedArray.hexDump( WebModule.TypedArray.fromString("あいうえお", Uint32Array) );`
+`TypedArray.hexDump( TypedArray.fromString("あいうえお", Uint32Array) );`
 
 ```
 ADDR          0        1        2        3
@@ -38,7 +41,7 @@ ADDR          0        1        2        3
 000004 0000304a
 ```
 
-`WebModule.TypedArray.hexDump( WebModule.TypedArray.fromString("あいうえお", Uint16Array) );`
+`TypedArray.hexDump( TypedArray.fromString("あいうえお", Uint16Array) );`
 
 ```
 ADDR      0    1    2    3    4    5    6    7
@@ -46,7 +49,7 @@ ADDR      0    1    2    3    4    5    6    7
 000000 3042 3044 3046 3048 304a
 ```
 
-`WebModule.TypedArray.hexDump( WebModule.TypedArray.fromString("あいうえお", Uint8Array));`
+`TypedArray.hexDump( TypedArray.fromString("あいうえお", Uint8Array));`
 
 ```
 ADDR    0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F

@@ -12,16 +12,16 @@ onmessage = function(event) {
         self.console.table = function() {};
     }
 
-    importScripts("../lib/WebModule.js");
+    importScripts("../../lib/WebModule.js");
 
     // publish to global
     WebModule.publish = true;
 
-    importScripts("../node_modules/uupaa.random.js/lib/Random.js");
-    importScripts("wmtools.js");
-    importScripts("../lib/TypedArray.js");
-    importScripts("../release/TypedArray.w.min.js");
-    importScripts("testcase.js");
+    importScripts("../../node_modules/uupaa.random.js/lib/Random.js");
+    importScripts("../wmtools.js");
+    importScripts("../../lib/TypedArray.js");
+    importScripts("../../release/TypedArray.w.min.js");
+    importScripts("../testcase.js");
 
     self.postMessage(self.unitTest);
 };
