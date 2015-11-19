@@ -425,19 +425,19 @@ function testTypedArray_dumpMarkup(test, pass, miss) {
     var src32 = _makeRndomValue(60).map(function(v) { return v & 0xffffffff });
     var markupObject = { min: 0x00, max: 0x80, 0xea: "blue", 0xe6: "green" };
     var markupArray = [0x45ea, 0x16e6];
-    var markupFunction = function(num, markup) {
+    var markupFunction = function(index, num, markup) {
         var rand = (Math.random() * 10) | 0;
         switch (rand) {
-        case 0: return "black";
-        case 1: return "red";
-        case 2: return "blue";
-        case 3: return "green";
-        case 4: return "navy";
-        case 5: return "lime";
-        case 6: return "pink";
-        case 7: return "tomato";
-        case 8: return "skyblue";
-        case 9: return "gold";
+        case 0: return "color:black";
+        case 1: return "color:red";
+        case 2: return "color:blue";
+        case 3: return "color:green";
+        case 4: return "color:navy";
+        case 5: return "color:lime";
+        case 6: return "color:pink";
+        case 7: return "color:tomato";
+        case 8: return "color:skyblue";
+        case 9: return "color:gold";
         }
         return "white";
     };
