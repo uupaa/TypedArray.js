@@ -26,6 +26,7 @@ var test = new Test("TypedArray", {
         testTypedArray_fromString,
         testTypedArray_dump,
         testTypedArray_dumpMarkup,
+        testTypedArray_dumpOverflow,
     ]);
 
 if (IN_BROWSER || IN_NW) {
@@ -446,6 +447,15 @@ function testTypedArray_dumpMarkup(test, pass, miss) {
     TypedArray.dump(new Uint32Array(src32),  0, 0, 16, markupFunction);
 
     test.done(pass());
+}
+
+function testTypedArray_dumpOverflow(test, pass, miss) {
+    try {
+        TypedArray.dump([1,2,3], 0, 1000, 16);
+        test.done(pass());
+    } catch (error) {
+        test.done(miss());
+    }
 }
 
 return test.run();
