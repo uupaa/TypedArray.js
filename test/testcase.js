@@ -24,7 +24,7 @@ var test = new Test("TypedArray", {
         testTypedArray_read,
         testTypedArray_toString,
         testTypedArray_fromString,
-        testTypedArray_dump,
+        testTypedArray_dumpRadix,
         testTypedArray_dumpMarkup,
         testTypedArray_dumpOverflow,
     ]);
@@ -401,31 +401,27 @@ function _makeRndomValue(length) {
     return result;
 }
 
-function testTypedArray_dump(test, pass, miss) {
+function testTypedArray_dumpRadix(test, pass, miss) {
     var src8  = _makeRndomValue(60).map(function(v) { return v & 0xff });
     var src16 = _makeRndomValue(60).map(function(v) { return v & 0xffff });
     var src32 = _makeRndomValue(60).map(function(v) { return v & 0xffffffff });
 
-    TypedArray.dump(new Uint8Array(src8),    0, 0, 16);
-    TypedArray.dump(new Uint16Array(src16),  0, 0, 16);
-    TypedArray.dump(new Uint32Array(src32),  0, 0, 16);
-    TypedArray.dump(new Uint8Array(src8),    0, 0, 10);
-    TypedArray.dump(new Uint16Array(src16),  0, 0, 10);
-    TypedArray.dump(new Uint32Array(src32),  0, 0, 10);
-    TypedArray.dump(new Uint8Array(src8),    0, 0,  2);
-    TypedArray.dump(new Uint16Array(src16),  0, 0,  2);
-    TypedArray.dump(new Uint32Array(src32),  0, 0,  2);
+    TypedArray.dump(new Uint8Array(src8),    { radix: 16 });
+    TypedArray.dump(new Uint16Array(src16),  { radix: 16 });
+    TypedArray.dump(new Uint32Array(src32),  { radix: 16 });
+    TypedArray.dump(new Uint8Array(src8),    { radix: 10 });
+    TypedArray.dump(new Uint16Array(src16),  { radix: 10 });
+    TypedArray.dump(new Uint32Array(src32),  { radix: 10 });
+    TypedArray.dump(new Uint8Array(src8),    { radix:  2 });
+    TypedArray.dump(new Uint16Array(src16),  { radix:  2 });
+    TypedArray.dump(new Uint32Array(src32),  { radix:  2 });
 
     test.done(pass());
 }
 
 function testTypedArray_dumpMarkup(test, pass, miss) {
     var src8  = _makeRndomValue(60).map(function(v) { return v & 0xff });
-    var src16 = _makeRndomValue(60).map(function(v) { return v & 0xffff });
-    var src32 = _makeRndomValue(60).map(function(v) { return v & 0xffffffff });
-    var markupObject = { min: 0x00, max: 0x80, 0xea: "blue", 0xe6: "green" };
-    var markupArray = [0x45ea, 0x16e6];
-    var markupFunction = function(index, num, markup) {
+    var markupFunction = function(index, num, source) {
         var rand = (Math.random() * 10) | 0;
         switch (rand) {
         case 0: return "color:black";
@@ -439,19 +435,17 @@ function testTypedArray_dumpMarkup(test, pass, miss) {
         case 8: return "color:skyblue";
         case 9: return "color:gold";
         }
-        return "white";
+        return "";
     };
 
-    TypedArray.dump(new Uint8Array(src8),    0, 0, 16, markupObject);
-    TypedArray.dump(new Uint16Array(src16),  0, 0, 16, markupArray);
-    TypedArray.dump(new Uint32Array(src32),  0, 0, 16, markupFunction);
+    TypedArray.dump(new Uint8Array(src8), { markup: markupFunction });
 
     test.done(pass());
 }
 
 function testTypedArray_dumpOverflow(test, pass, miss) {
     try {
-        TypedArray.dump([1,2,3], 0, 1000, 16);
+        TypedArray.dump([1,2,3], { begin: 0, end: 1000, radix: 16 });
         test.done(pass());
     } catch (error) {
         test.done(miss());
