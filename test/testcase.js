@@ -25,7 +25,7 @@ var test = new Test("TypedArray", {
         testTypedArray_toString,
         testTypedArray_fromString,
         testTypedArray_dumpRadix,
-        testTypedArray_dumpMarkup,
+        testTypedArray_dumpStyle,
         testTypedArray_dumpOverflow,
     ]);
 
@@ -419,26 +419,15 @@ function testTypedArray_dumpRadix(test, pass, miss) {
     test.done(pass());
 }
 
-function testTypedArray_dumpMarkup(test, pass, miss) {
+function testTypedArray_dumpStyle(test, pass, miss) {
     var src8  = _makeRndomValue(60).map(function(v) { return v & 0xff });
-    var markupFunction = function(index, num, source) {
-        var rand = (Math.random() * 10) | 0;
-        switch (rand) {
-        case 0: return "color:black";
-        case 1: return "color:red";
-        case 2: return "color:blue";
-        case 3: return "color:green";
-        case 4: return "color:navy";
-        case 5: return "color:lime";
-        case 6: return "color:pink";
-        case 7: return "color:tomato";
-        case 8: return "color:skyblue";
-        case 9: return "color:gold";
-        }
-        return "";
-    };
 
-    TypedArray.dump(new Uint8Array(src8), { markup: markupFunction });
+    TypedArray.dump(new Uint8Array(src8), {
+        style: {
+            foo: { css: "color:red",  values: [0xEA, 0xE6, 0xAA, 0xB0] },
+            bar: { css: "color:blue", values: [0x5E, 0x46, 0x43, 0x2C] },
+        }
+    });
 
     test.done(pass());
 }

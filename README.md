@@ -32,7 +32,7 @@ TypedArray.toArrayBuffer("http://example.com/404.png", function(arrayBuffer) { .
 </script>
 ```
 
-`TypedArray.hexDump( TypedArray.fromString("あいうえお", Uint32Array) );`
+`TypedArray.dump( TypedArray.fromString("あいうえお", Uint32Array) );`
 
 ```
 ADDR          0        1        2        3
@@ -41,7 +41,7 @@ ADDR          0        1        2        3
 000004 0000304a
 ```
 
-`TypedArray.hexDump( TypedArray.fromString("あいうえお", Uint16Array) );`
+`TypedArray.dump( TypedArray.fromString("あいうえお", Uint16Array) );`
 
 ```
 ADDR      0    1    2    3    4    5    6    7
@@ -49,7 +49,7 @@ ADDR      0    1    2    3    4    5    6    7
 000000 3042 3044 3046 3048 304a
 ```
 
-`TypedArray.hexDump( TypedArray.fromString("あいうえお", Uint8Array));`
+`TypedArray.dump( TypedArray.fromString("あいうえお", Uint8Array));`
 
 ```
 ADDR    0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F
