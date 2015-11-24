@@ -424,8 +424,10 @@ function testTypedArray_dumpStyle(test, pass, miss) {
 
     TypedArray.dump(new Uint8Array(src8), {
         style: {
-            foo: { css: "color:red",  values: [0xEA, 0xE6, 0xAA, 0xB0] },
-            bar: { css: "color:blue", values: [0x5E, 0x46, 0x43, 0x2C] },
+            style1: { css: "color:red",  values: [0xEA, 0xE6, 0xAA, 0xB0] },
+            style2: { css: "color:blue", values: [0x5E, 0x46, 0x43, 0x2C] },
+            range1: { css: "color:green", begin: 8, end: 10 },
+            range2: { css: "color:pink", begin: 20 },
         }
     });
 
