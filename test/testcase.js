@@ -424,10 +424,14 @@ function testTypedArray_dumpStyle(test, pass, miss) {
 
     TypedArray.dump(new Uint8Array(src8), {
         style: {
-            style1: { css: "color:red",  values: [0xEA, 0xE6, 0xAA, 0xB0] },
-            style2: { css: "color:blue", values: [0x5E, 0x46, 0x43, 0x2C] },
-            range1: { css: "color:green", begin: 8, end: 10 },
-            range2: { css: "color:pink", begin: 20 },
+            values1: { css: "color:red",  values: [0xEA, 0xE6, 0xAA, 0xB0] },
+            values2: { css: "color:blue", values: [0x5E, 0x46, 0x43, 0x2C] },
+            range1:  { css: "color:green", begin: 8, end: 10 },
+            range2:  { css: "color:pink", begin: 20 },
+            // 23byte 以降に 0x50, 0x51, 0x52 があったら blue にする
+            valuesWithRange0x50: { css: "color:blue", begin: 23, values: [0x50] },
+            valuesWithRange0x51: { css: "color:blue", begin: 23, values: [0x51] },
+            valuesWithRange0x52: { css: "color:blue", begin: 23, values: [0x52] },
         }
     });
 
