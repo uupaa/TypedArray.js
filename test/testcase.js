@@ -28,6 +28,7 @@ if (IN_BROWSER || IN_NW || IN_EL) {
         testTypedArray_fromString,
         testTypedArray_concat_Uint8Array,
         testTypedArray_concat_Uint16Array,
+        testTypedArray_concat_mixType,
     ]);
 }
 
@@ -343,7 +344,7 @@ function testTypedArray_concat_Uint8Array(test, pass, miss) {
     var c = new Uint8Array([0,0]);
     var d = TypedArray.concat(a, b, c); // [1,2,3,4,5,6,7,8,9,10,0,0]
 
-    if (d.length === 12) {
+    if (d.length === 12 && d[0] === 1) {
         test.done(pass());
     } else {
         test.done(miss());
@@ -356,14 +357,23 @@ function testTypedArray_concat_Uint16Array(test, pass, miss) {
     var c = new Uint16Array([0,0]);
     var d = TypedArray.concat(a, b, c); // [1,2,3,4,5,6,7,8,9,10,0,0]
 
-    if (d.length === 12) {
+    if (d.length === 12 && d[0] === 1) {
         test.done(pass());
     } else {
         test.done(miss());
     }
 }
 
+function testTypedArray_concat_mixType(test, pass, miss) {
+    // Uint8Array と Uint16Array は混在できません
 
+    try {
+        TypedArray.concat(new Uint8Array(10), new Uint16Array(10));
+        test.done(miss());
+    } catch ( o__o ) {
+        test.done(pass());
+    }
+}
 
 return test.run();
 
