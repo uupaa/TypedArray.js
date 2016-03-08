@@ -4,7 +4,8 @@
 
 TypedArray utility functions.
 
-Thiry utility functions. module made of [WebModule](https://github.com/uupaa/WebModule).
+
+This module made of [WebModule](https://github.com/uupaa/WebModule).
 
 ## Documentation
 - [Spec](https://github.com/uupaa/TypedArray.js/wiki/)
@@ -28,35 +29,9 @@ TypedArray.fromString("Hello")                  // -> [72, 101, 108, 108, 111]
 TypedArray.fromString("あいう")                 // -> [66, 68, 70]
 TypedArray.fromString("あいう", Uint16Array)    // -> [12354, 12356, 12358]
 
-TypedArray.toArrayBuffer("http://example.com/404.png", function(arrayBuffer) { ... });
+TypedArray.concat(new Uint8Array(10), new Uint8Array(20)) // -> new Uint8Array(30)
 </script>
 ```
-
-`TypedArray.dump( TypedArray.fromString("あいうえお", Uint32Array) );`
-
-```
-ADDR          0        1        2        3
------- -------- -------- -------- --------
-000000 00003042 00003044 00003046 00003048
-000004 0000304a
-```
-
-`TypedArray.dump( TypedArray.fromString("あいうえお", Uint16Array) );`
-
-```
-ADDR      0    1    2    3    4    5    6    7
------- ---- ---- ---- ---- ---- ---- ---- ----
-000000 3042 3044 3046 3048 304a
-```
-
-`TypedArray.dump( TypedArray.fromString("あいうえお", Uint8Array));`
-
-```
-ADDR    0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F
------- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
-000000 42 44 46 48 4a
-```
-
 
 ## WebWorkers
 
@@ -64,9 +39,7 @@ ADDR    0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F
 importScripts("<module-dir>lib/WebModule.js");
 importScripts("<module-dir>lib/TypedArray.js");
 
-...
 ```
-
 
 ## Node.js
 
@@ -74,6 +47,5 @@ importScripts("<module-dir>lib/TypedArray.js");
 require("<module-dir>lib/WebModule.js");
 require("<module-dir>lib/TypedArray.js");
 
-...
 ```
 

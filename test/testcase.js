@@ -1,22 +1,24 @@
 var ModuleTestTypedArray = (function(global) {
 
-global["BENCHMARK"] = false;
-
-var test = new Test("TypedArray", {
+var test = new Test(["TypedArray"], { // Add the ModuleName to be tested here (if necessary).
         disable:    false, // disable all tests.
         browser:    true,  // enable browser test.
         worker:     true,  // enable worker test.
         node:       true,  // enable node test.
         nw:         true,  // enable nw.js test.
-        el:         true,  // enable Electron test.
+        el:         true,  // enable electron (render process) test.
         button:     true,  // show button.
         both:       true,  // test the primary and secondary modules.
         ignoreError:false, // ignore error.
         callback:   function() {
         },
         errorback:  function(error) {
+            console.error(error.message);
         }
-    }).add([
+    });
+
+if (IN_BROWSER || IN_NW || IN_EL) {
+    test.add([
         testTypedArray_basic,
         testTypedArray_hton,
         testTypedArray_ntoh,
@@ -24,24 +26,8 @@ var test = new Test("TypedArray", {
         testTypedArray_read,
         testTypedArray_toString,
         testTypedArray_fromString,
-    ]);
-
-if (IN_BROWSER || IN_NW) {
-    test.add([
-        testTypedArray_toArrayBuffer_xhr404,
-    ]);
-} else if (IN_WORKER) {
-    test.add([
-        // worker test
-    ]);
-} else if (IN_NODE) {
-    test.add([
-        // node.js and io.js test
-    ]);
-}
-if (global["Blob"]) {
-    test.add([
-        testTypedArray_toArrayBuffer_blob,
+        testTypedArray_concat_Uint8Array,
+        testTypedArray_concat_Uint16Array,
     ]);
 }
 
@@ -351,43 +337,32 @@ function testTypedArray_fromString(test, pass, miss) {
     }
 }
 
-function testTypedArray_toArrayBuffer_xhr404(test, pass, miss) {
-    var source = "./404.png";
+function testTypedArray_concat_Uint8Array(test, pass, miss) {
+    var a = new Uint8Array([1,2,3,4,5]);
+    var b = new Uint8Array([6,7,8,9,10]);
+    var c = new Uint8Array([0,0]);
+    var d = TypedArray.concat(a, b, c); // [1,2,3,4,5,6,7,8,9,10,0,0]
 
-    var success = function(result, source) {
+    if (d.length === 12) {
+        test.done(pass());
+    } else {
         test.done(miss());
-    };
-
-    var error = function(error, source) {
-        if (error instanceof Error) {
-            test.done(pass());
-            return;
-        }
-        test.done(miss());
-    };
-
-    TypedArray.toArrayBuffer(source, success, error);
+    }
 }
 
-function testTypedArray_toArrayBuffer_blob(test, pass, miss) {
-    var source = new Blob(["hello"], { type: "text/plain" });
+function testTypedArray_concat_Uint16Array(test, pass, miss) {
+    var a = new Uint16Array([1,2,3,4,5]);
+    var b = new Uint16Array([6,7,8,9,10]);
+    var c = new Uint16Array([0,0]);
+    var d = TypedArray.concat(a, b, c); // [1,2,3,4,5,6,7,8,9,10,0,0]
 
-    var success = function(result, source) {
-        if (result && result.byteLength === 5) {
-            var text = String.fromCharCode.apply(null, new Uint8Array(result));
-            if (text === "hello") {
-                test.done(pass());
-                return;
-            }
-        }
+    if (d.length === 12) {
+        test.done(pass());
+    } else {
         test.done(miss());
-    };
-    var error = function(error, source) {
-        test.done(miss());
-    };
-
-    WebModule.TypedArray.toArrayBuffer(source, success, error);
+    }
 }
+
 
 
 return test.run();
